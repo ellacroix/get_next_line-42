@@ -6,16 +6,17 @@
 /*   By: ellacroi <ellacroi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:51:16 by ellacroi          #+#    #+#             */
-/*   Updated: 2020/11/22 19:12:40 by ellacroi         ###   ########.fr       */
+/*   Updated: 2020/11/22 21:39:52 by ellacroi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+#include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
-#define BUFFER_SIZE 2
+//#define BUFFER_SIZE 4
 
 int	ft_remove_line_from_buffer(char *buffer)
 {
@@ -62,7 +63,7 @@ int	ft_buffer_to_line(char *buffer, char **line)
 
 int	get_next_line(int fd, char **line)
 {
-	static char	buffer[BUFFER_SIZE];
+	static char	buffer[BUFFER_SIZE + 1];
 	int			ret;
 
 	if (!line || fd < 0 || BUFFER_SIZE < 1)
@@ -89,11 +90,12 @@ int	main(int ac, char **av)
 {
 	(void)ac;
 	int	fd = open(av[1], O_RDONLY);
-	int	fd2 = open(av[2], O_RDONLY);
 	char *line = NULL;
 
 	get_next_line(fd, &line);
+	printf("line = %s\n", line);
 	get_next_line(fd, &line);
-	get_next_line(fd2, &line);
+	printf("line = %s\n", line);
+	get_next_line(fd, &line);
 	printf("line = %s\n", line);
 }
