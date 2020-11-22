@@ -6,7 +6,7 @@
 /*   By: ellacroi <ellacroi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:51:16 by ellacroi          #+#    #+#             */
-/*   Updated: 2020/11/22 19:12:40 by ellacroi         ###   ########.fr       */
+/*   Updated: 2020/11/22 21:17:52 by ellacroi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
-#define BUFFER_SIZE 2
 
 int	ft_remove_line_from_buffer(char *buffer)
 {
@@ -84,7 +83,7 @@ int	get_next_line(int fd, char **line)
 	}
 	return (ret);
 }
-
+/*
 int	main(int ac, char **av)
 {
 	(void)ac;
@@ -96,4 +95,4 @@ int	main(int ac, char **av)
 	get_next_line(fd, &line);
 	get_next_line(fd2, &line);
 	printf("line = %s\n", line);
-}
+}*/

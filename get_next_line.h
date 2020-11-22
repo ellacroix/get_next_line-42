@@ -6,7 +6,7 @@
 /*   By: ellacroi <ellacroi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:54:11 by ellacroi          #+#    #+#             */
-/*   Updated: 2020/11/22 18:47:40 by ellacroi         ###   ########.fr       */
+/*   Updated: 2020/11/22 21:17:05 by ellacroi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,5 @@
 
 # include <stdlib.h>
 # include <unistd.h>
-
-# define BUFFER_SIZE 2
 
 #endif
