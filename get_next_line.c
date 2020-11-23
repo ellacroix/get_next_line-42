@@ -6,7 +6,7 @@
 /*   By: ellacroi <ellacroi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 18:51:16 by ellacroi          #+#    #+#             */
-/*   Updated: 2020/11/22 22:28:30 by ellacroi         ###   ########.fr       */
+/*   Updated: 2020/11/23 10:56:06 by ellacroi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
-//#define BUFFER_SIZE 4
+//#define BUFFER_SIZE 2
 
 int	ft_remove_line_from_buffer(char *buffer)
 {
@@ -25,15 +25,18 @@ int	ft_remove_line_from_buffer(char *buffer)
 
 	i = 0;
 	j = 0;
-	while (buffer[i] && buffer[i] != '\n' && i <BUFFER_SIZE)
+	while (buffer[i] && buffer[i] != '\n')
+	{
+		buffer[i] = '\0';
 		i++;
-	if (buffer[i] == '\0')
+	}
+	if (buffer[i] == '\0')		//Verifie si buffer contient une line (\n), sinon renvoie 0 pour read plus de caracteres
 		return (0);
-	while (++i < BUFFER_SIZE)
+	while (++i < BUFFER_SIZE)	//buffer contient un \n, on decale buffer vers la gauche pour effacer la line envoyee + le \n ("ab\n01" -> "01")
 		buffer[j++] = buffer[i];
-	while (j < BUFFER_SIZE)
+	while (j < BUFFER_SIZE)		//on efface les derniers caracteres
 		buffer[j++] = '\0';
-	return (1);
+	return (1);					//Porte de sortie indiquant une line complete dans line
 }
 
 int	ft_buffer_to_line(char *buffer, char **line)
@@ -44,18 +47,18 @@ int	ft_buffer_to_line(char *buffer, char **line)
 
 	i = 0;
 	j = 0;
-	while (buffer[i] && buffer[i] != '\n' && i <BUFFER_SIZE)
+	while (buffer[i] && buffer[i] != '\n')	//On lit buffer jusqu'a sa fin ou un \n, i < BUFFER_SIZE inutile ?
 		i++;
-	while (*line && (*line)[j])
+	while (*line && (*line)[j])	//Si line contient quelque chose, on le mesure
 		j++;
-	if (!(newline = malloc(sizeof(char) * (i + j + 1))))
+	if (!(newline = malloc(sizeof(char) * (i + j + 1))))	//malloc pouvant accueillir buffer + line + \0
 		return (-1);
 	newline[i + j] = '\0';
-	while (i--)
+	while (i--)					//Copie le buffer au bout de newline, depuis la fin
 		newline[j + i] = buffer[i];
-	while (j--)
+	while (j--)					//Copie ce qu'il y avait dans line, depuis la fin
 		newline[j] = (*line)[j];
-	if (*line)
+	if (*line)					//Libere l'ancienne line, si de la memoire lui etait allouee (donc chaque passage sauf premier appel)
 		free(*line);
 	*line = newline;
 	return(ft_remove_line_from_buffer(buffer));
@@ -66,11 +69,11 @@ int	get_next_line(int fd, char **line)
 	static char	buffer[BUFFER_SIZE + 1];
 	int			ret;
 
-	if (!line || fd < 0 || BUFFER_SIZE < 1)
+	if (!line || fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) < 0)
 		return (-1);
-	*line = NULL;
+	*line = NULL;	//On reset line si elle contient quelque chose d'un appel precedent
 	ret = 0;
-	while ((ret = ft_buffer_to_line(buffer, line)) == 0)
+	while ((ret = ft_buffer_to_line(buffer, line)) == 0) //si ret == 0, line pas fini, si ret == 1, line fini
 	{
 		if ((ret = read(fd, buffer, BUFFER_SIZE)) < 1)
 		{
@@ -79,22 +82,26 @@ int	get_next_line(int fd, char **line)
 				if (*line)
 					free(*line);
 				line = NULL;
-			}
-			return (ret);
+			}			
+			return (ret);	//Porte de sortie en cas d'atteinte de EOF, ret == 0 (ou d'erreur de read, ret == -1)
 		}
 	}
 	return (ret);
 }
 
+/*
 int	main(int ac, char **av)
 {
 	(void)ac;
 	int	fd = open(av[1], O_RDONLY);
-	int	fd2 = open(av[2], O_RDONLY);
-	char *line = NULL;
+	char *line;
+	int ret = 1;
 
-	get_next_line(fd, &line);
-	get_next_line(fd, &line);
-	get_next_line(fd2, &line);
-	printf("line = %s\n", line);
+	printf("fd = %d\n", fd);
+	while (ret > 0)
+	{
+		printf("return: %d \t ",ret = get_next_line(fd, &line));
+		printf("line = %s\n", line);
+	}
 }
+*/
